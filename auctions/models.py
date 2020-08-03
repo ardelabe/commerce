@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.fields import DateTimeField
-
+from django.utils import timezone
+#   models.DateTimeField(default=timezone.now)
 
 # each time you change anything in auctions/models.py, you’ll need to first 
 # run python manage.py makemigrations and then python manage.py migrate to 
@@ -20,17 +21,17 @@ class Product(models.Model):
 
 # one for auction listings (listagem de leiloes)
 class Auction(models.Model):
-    user_id = models.ManyToManyField(User, blank=True, related_name="owner")
-    is_active = models.BooleanField() # None by default
-    product = models.ManyToManyField(Product, blank=True, related_name="auction_product")
+    owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="owner")
+    active = models.BooleanField() # None by default
+    anounced = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="auction_product")
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f"Auction id: {self.id} - Owner: {self.user_id} - active: {self.is_active}"
+        return f"{self.id}|{self.owner}|{self.active}|{self.price}"
 
 # one for bids (lances)
 class Bid(models.Model):
-    user_id = models.ManyToManyField(User, blank=True, related_name="bidder")
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="bidder")
     auction = models.ForeignKey(User, on_delete=models.PROTECT, related_name="auction_bid")
     bid = models.DecimalField(max_digits=10, decimal_places=2)
     

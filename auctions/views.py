@@ -69,7 +69,7 @@ def create(request):
         # IMPORTANT: requires development of authentication check
         
         # presents the dict on screen
-        print(request.POST)
+        # print(request.POST)
 
         # saves the dict in a variable
         data_post = request.POST
@@ -101,43 +101,48 @@ def create(request):
             # this chunk of code works with user-info
             # user = request.user.is_authenticated # saves True or False
             # print(user) 
-            user = request.user
+            owner = request.user
             # print(user)
             # print(user.id)
             # print(user.first_name)
-
             # getting user id to add to Auctions
-            # user_id = user.id
+            # owner = owner.id
             # print(User.objects.get(pk=user_id))
-            user_id = User.objects.get(pk=user.id)
-            print(user_id)
+            # user_id = User.objects.get(pk=user.id)
+            print(f"USER:", owner)
 
             # setting is_active to true, because it's just created
             # maybe put this on default?
-            is_active = True
+            active = True
+            print(F"ACTIVE", active)
+
 
             # figuring out what is the product_id selected
             # print(request.POST)
             # print(data_post["product"])
             # product_id = data_post["product"]
             # print(Product.objects.get(pk=product_id))
-            product_id = Product.objects.get(pk=data_post["product"])
-            print(product_id)
+            anounced = Product.objects.get(pk=data_post["product"])
+            print(f"PRODUCT:", anounced)
+
 
             # getting the price set
             # print(data_post["price"])
             price = data_post["price"]
+            print(f"PRICE:", price)
 
-            # newauction = Auction(user.id, is_active, product_id, price)
-            # print(newauction)
-            # newauction.save()
-            newauction = Auction()
-            newauction.is_active = is_active
-            newauction.price = price
-            newauction.save()
-            # newauction.user_id = user.id 
-            # newauction.user_id.set(user_id)
+            a = Auction(owner=owner, active=active, anounced=anounced, price=price)
+            print(a)
+            print(a.anounced)
+            a.save()
             
+
+
+
+
+
+
+           
 
     # BELOW THIS POINT WE ARE DEALING WITH GET
 
