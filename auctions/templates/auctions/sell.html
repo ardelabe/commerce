@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create Auction</h2>
+    <form action="{% url 'sell' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Title">
+        <p></p>
+        <input type="text" name="description" placeholder="Description">
+        <p></p>
+        <input type="number" min=".1" step="any" name="price" placeholder="Price">
+        <p></p>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

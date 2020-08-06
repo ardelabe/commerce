@@ -4,14 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Auction, Bid, Comment
 
 
 def index(request):
     return render(request, "auctions/index.html")
 
 # renders a login form when a user tries to GET the page
-# When a user submits the form using the POST request method, the user is authenticated, logged in, and redirected to the index page
+# When a user submits the form using the POST request method, the user is authenticated,
+# logged in, and redirected to the index page
 def login_view(request):
     if request.method == "POST":
 
@@ -36,7 +37,8 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-# displays a registration form to the user, and creates a new user when the form is submitted
+# displays a registration form to the user, and creates a new user when the form is 
+# submitted
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -62,3 +64,27 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+# Adding the @login_required decorator on top of any view will ensure that only a user 
+# who is logged in can access that view.
+
+def listings(request):
+    auctions = Auction.objects.all()
+    return render(request, "auctions/listings.html", {
+        "auctions": auctions
+    })
+
+def sell(request):
+    if request.method == "POST":
+        data = request.POST
+        # print(data)
+        title = data["title"]
+        # print(title)
+        description = data["description"]
+        price = data["price"]
+        user = request.user
+        # print(seller)
+        a = Auction(title=title, description=description, price=price, seller=user)
+        # print(a.description)
+        a.save()
+    return render(request, "auctions/sell.html")
