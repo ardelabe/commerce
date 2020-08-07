@@ -30,3 +30,8 @@ I made some other changes in models.py.
 20200804. This is a second try. I got stuck in my first attempt to make this project work. So, those observations of the first attempt are aplicable.
 20200805. I created the models. This time I stayed with the project description and I don't made a product table separated from auction. I dont' know why, but now migration doesn't create a relational table because of the foreign key (users) in auctions. I'm more confidant that it will work better now. With this, requisite **MODELS** where recriated.
 20200806. Gave listings.html acess by passing Auction data with **Auction.objects.all()** in views.py. Managed this data with the attribute **.title**. As I had imagined without that extra table with ids, the **CREATE LISTING** worked perfectly. There is one observation: the option to load an image is not developed - I'll return to this later (I have no idea how to implement).
+
+# 4. ACTIVE LISTINGS PAGE
+***BUG REPORT*** Sending form without data is crashing the website. 
+***Reminder*** Need to put "no image" as alt url to images in html (operate wit .css file).
+20200807. For the Active Listings Page task I altered the auctions model to store image url (a default url of the internet was provided). The entire auction data was already passing to Active Listings to display. I copied the code to home (addeded a link in layout to home too). And altered the loop to display the info that the problem asked to.

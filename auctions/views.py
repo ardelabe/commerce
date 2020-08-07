@@ -8,7 +8,10 @@ from .models import User, Auction, Bid, Comment
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    auctions = Auction.objects.all()
+    return render(request, "auctions/index.html", {
+        "auctions": auctions
+    })
 
 # renders a login form when a user tries to GET the page
 # When a user submits the form using the POST request method, the user is authenticated,
@@ -82,9 +85,11 @@ def sell(request):
         # print(title)
         description = data["description"]
         price = data["price"]
+        image = data["image"]
+        print(image)
         user = request.user
         # print(seller)
-        a = Auction(title=title, description=description, price=price, seller=user)
+        a = Auction(title=title, description=description, price=price, image=image, seller=user)
         # print(a.description)
         a.save()
     return render(request, "auctions/sell.html")

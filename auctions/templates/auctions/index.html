@@ -2,6 +2,17 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    <ul>
+        {% for auction in auctions %}
+            <li>
+                <img src="{{ auction.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
+                {{ auction.title }}
+                | Description: {{ auction.description }}
+                | USD {{ auction.price }}
+                <p></p>
+            </li>
+        {% empty %}
+            <li>No auctions</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

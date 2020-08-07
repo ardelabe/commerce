@@ -18,6 +18,7 @@ class Auction(models.Model):
     description = models.CharField(max_length=280)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller")
+    image = models.TextField(default="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png")
 
     def __str__(self):
         return f"{self.title}"
