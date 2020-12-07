@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <ul>
+        {% for item in watched %}
+            <li>
+                <img src="{{ item.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
+                <a href="{% url 'listings' item.id %}">{{ item.title }}</a>
+                | Description: {{ item.description }}
+                | USD {{ item.price }}
+                <p></p>
+            </li>
+        {% empty %}
+            There is no product in your Watchlist, click <a href="{% url 'index' %}">here</a> to browse something you like!
+        {% endfor %}
+    </ul>
+{% endblock %}

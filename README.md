@@ -35,3 +35,15 @@ I made some other changes in models.py.
 ***BUG REPORT*** Sending form without data is crashing the website. 
 ***Reminder*** Need to put "no image" as alt url to images in html (operate wit .css file).
 20200807. For the Active Listings Page task I altered the auctions model to store image url (a default url of the internet was provided). The entire auction data was already passing to Active Listings to display. I copied the code to home (addeded a link in layout to home too). And altered the loop to display the info that the problem asked to.
+
+# 5. LISTINGS PAGE
+I created a path with integer to take to auction.id with this integer. And used the info that I looped in "/" to display alone in "/integer".
+***Reminder*** There is no error checking for GET an "/integer" that does not exist. 
+I altered index.html to make every auction title a link to the corresponding page - to do that, I put the existing title inside an <a href>, leading to listings url and giving the auction.id as argument. I'm so happy - this worked smootly on my first attempt.  
+
+# 6. TRYING TO GET THOSE COMMENTARIES WORKING
+20201204. Unfortunately almost 4 months have passed since last time I worked in this project. I'm trying to work in the commentaries now. I read a bit of the work I've done, and started by changing listings.html with a paragraph-placeholder to logged user, a commentary field with a button and a paragraph-placeholder to a loop into any existing commentaries. 
+Next, I create a path in urls.py and a view. Got some error *The view auctions.views.comment didn't return an HttpResponse object*, but copied a line to return to index from another view. Looks like it's not crashing - what at this point feels nice. 
+I just learned that <input type="hidden" name="flag" value="2" /> is a way to send posting data outside form. 
+I remembered that is an **object** that is passed as foreign key to save in a table, not the id - the line auction = Auction.objects.get(pk=subject_id) is extremely useful - it saves an object in a variable - searching by the argumend given as pk. 
+I had to change the db, so I modified the models.py, was necessary to run python3 manage.py makemigrations and python3 manage.py migrate. 

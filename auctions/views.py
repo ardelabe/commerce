@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Auction, Bid, Comment
+from .models import User, Auction, Bid, Comment, Watch
 
 
 def index(request):
@@ -71,10 +71,23 @@ def register(request):
 # Adding the @login_required decorator on top of any view will ensure that only a user 
 # who is logged in can access that view.
 
-def listings(request):
-    auctions = Auction.objects.all()
+def listings(request, auction_id):
+    auction = Auction.objects.get(pk=auction_id)
+    # print(auction_id)
+    comments = Comment.objects.filter(subject_id=auction_id)
+    watch = Watch.objects.filter(watcher_id=request.user)
+    watchBool = False
+    # print(watch)
+    for i in watch:
+        # print(i)
+        # print(i.watched_id)
+        if (auction_id == i.watched_id) and (i.active == True):
+            watchBool = True
+    # print(watchBool) 
     return render(request, "auctions/listings.html", {
-        "auctions": auctions
+        "auction": auction,
+        "commentary": comments,
+        "watch": watchBool,
     })
 
 def sell(request):
@@ -90,6 +103,56 @@ def sell(request):
         user = request.user
         # print(seller)
         a = Auction(title=title, description=description, price=price, image=image, seller=user)
-        # print(a.description)
+        # print(a)
         a.save()
     return render(request, "auctions/sell.html")
+
+def watch(request):
+    if request.method == "POST":
+        data = request.POST
+        print(data)
+        if data["action"] == "insertRow":
+            print('insertRow')
+            watched_id = data["watched_id"]
+            watcher_id = data["watcher_id"]
+            print(watcher_id)
+            w = Watch(watched_id=watched_id, watcher_id=watcher_id, active=True)
+            print(w)
+            w.save()
+        elif data["action"] == "inactiveRow":
+            # print('inactiveRow')
+            watch = Watch.objects.filter(watcher_id=request.user)
+            # print(watch)
+            for i in watch:
+                # print("THE ID IS", i.id)
+                # print(i.watcher_id)
+                # print(i.watched_id)
+                if int(i.watcher_id) == int(data["watcher_id"]) and int(i.watched_id) == int(data["watched_id"]):
+                    # print("they match")
+                    # print(i.active)
+                    inac = Watch.objects.get(pk=i.id)
+                    inac.active = False
+                    inac.save()
+            # print("what is coming from POST is:", data["watcher_id"], "and", data["watched_id"])
+    
+    
+    return render(request, "auctions/watch.html", {
+    })
+
+def comment(request):
+    if request.method == "POST":
+        data = request.POST
+        print(data)
+        comment = data["commentary"]
+        print(comment)
+        commentator_id = request.user
+        print(commentator_id)
+        subject_id = data["subject_id"]
+        print(subject_id)
+        auction = Auction.objects.get(pk=subject_id)
+        print(auction)
+        c = Comment(comentator=commentator_id, comment=comment, subject=auction)
+        print(c)
+        c.save()
+        
+        return HttpResponseRedirect(reverse("index"))

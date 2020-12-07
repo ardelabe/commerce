@@ -19,6 +19,7 @@ class Auction(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller")
     image = models.TextField(default="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png")
+    active = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.title}"
@@ -39,4 +40,12 @@ class Comment(models.Model):
     subject = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="item")
 
     def __str__(self):
-        return f"{self.comentator} posted on {self.subject}"
+        return f"{self.comentator} has posted on {self.subject}"
+
+class Watch(models.Model):
+    watcher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watcher")
+    watched = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="watched")
+    active = models.BooleanField(default=True, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.watcher} is watching {self.watched}"

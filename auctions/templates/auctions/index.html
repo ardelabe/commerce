@@ -6,7 +6,7 @@
         {% for auction in auctions %}
             <li>
                 <img src="{{ auction.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
-                {{ auction.title }}
+                <a href="{% url 'listings' auction.id %}">{{ auction.title }}</a>
                 | Description: {{ auction.description }}
                 | USD {{ auction.price }}
                 <p></p>

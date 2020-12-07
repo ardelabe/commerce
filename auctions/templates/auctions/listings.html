@@ -1,12 +1,47 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>All Auctions</h2>
+    <h2>Auction {{ auction.id }} </h2>
+    <img src="{{ auction.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
+    {{ auction.title }} | Description: {{ auction.description }} | USD {{ auction.price }}
+    <p></p>
+    <h2>Watchlist</h2>
+    <p></p>
+    {% if watch == True %}
+        <form action="{% url 'watch' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="watched_id" value="{{ auction.id }}">
+            <input type="hidden" name="watcher_id" value="{{ user.id }}">
+            <input type="hidden" name="action" value="inactiveRow">
+            <button class="btn btn-primary" type="submit">Remove from Watchlist</button>
+        </form>
+    {% else %}
+        <form action="{% url 'watch' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="watched_id" value="{{ auction.id }}">
+            <input type="hidden" name="watcher_id" value="{{ user.id }}">
+            <input type="hidden" name="action" value="insertRow">
+            <button class="btn btn-primary" type="submit">Add to Watchlist</button>
+        </form> 
+    {% endif %}
+    <p></p>
+    <h2>Commentary section</h2>
+    <form action="{% url 'comment' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="commentary" placeholder="Type your commentary here">
+        </div>
+        <input type="hidden" name="subject_id" value="{{ auction.id }}">
+        <input type="hidden" name="commentator_id" value="{{ user.id }}">
+        <button class="btn btn-primary" type="submit">Comment</button>
+    </form>
     <ul>
-        {% for auction in auctions %}
-            <li>{{ auction.title }}</li>
+        {% for commentary in commentary %}
+            <li>
+                <p>{{ user.username }} said: {{ commentary.comment }}</p>
+            </li>
         {% empty %}
-            <li>No passengers on this flight.</li>
+            <li>Be the first to comment something about this auction</li>
         {% endfor %}
     </ul>
 {% endblock %}
