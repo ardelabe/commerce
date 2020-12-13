@@ -1,9 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if unautMess %}
+    <div>{{ unautMess }}</div>
+    {% else %} 
     <h2>Watchlist</h2>
     <ul>
-        {% for item in watched %}
+        {% for item in products %}
             <li>
                 <img src="{{ item.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
                 <a href="{% url 'listings' item.id %}">{{ item.title }}</a>
@@ -15,4 +18,5 @@
             There is no product in your Watchlist, click <a href="{% url 'index' %}">here</a> to browse something you like!
         {% endfor %}
     </ul>
+    {% endif %} 
 {% endblock %}

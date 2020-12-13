@@ -7,6 +7,10 @@
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
+    
+    {% if unautMess %}
+    <div>{{ unautMess }}</div>
+    {% endif %}
 
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}

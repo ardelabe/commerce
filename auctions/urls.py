@@ -11,5 +11,8 @@ urlpatterns = [
     path("sell", views.sell, name="sell"),
     path("<int:auction_id>", views.listings, name="listings"),
     path("watch", views.watch, name="watch"),
-    path("comment", views.comment, name="comment")
+    path("comment", views.comment, name="comment"),
+    path("close", views.close, name="close"),
+    path("category", views.category, name="category"), 
+    path("category/<int:distinct_id>", views.grouping, name="grouping")
 ]

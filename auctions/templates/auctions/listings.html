@@ -1,47 +1,88 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Auction {{ auction.id }} </h2>
+    <h2>Listing {{ auction.title }} </h2>
     <img src="{{ auction.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
-    {{ auction.title }} | Description: {{ auction.description }} | USD {{ auction.price }}
-    <p></p>
-    <h2>Watchlist</h2>
-    <p></p>
-    {% if watch == True %}
-        <form action="{% url 'watch' %}" method="post">
+    <h3>Details</h3>
+    {{ auction.title }} | Description: {{ auction.description }} | Starting bid: USD {{ auction.price }} | listed by {{ seller.username }}
+    {% if auction.active == True %}
+        <p>Current bid: USD {{ maxBid }}</p>
+        {% if user.username ==  bidder.username %}
+            You have the current best bid.
+        {% else %}
+            The best bid is not yours.
+        {% endif %}
+        <p></p> 
+        <p>Bid on this item!</p>
+        {% if message %}
+        <div>{{ message }}</div>
+        {% endif %}
+        <form action="{% url 'listings' auction.id %}" method="post">
             {% csrf_token %}
+            <input type="hidden" name="action" value="placeBid">
             <input type="hidden" name="watched_id" value="{{ auction.id }}">
             <input type="hidden" name="watcher_id" value="{{ user.id }}">
-            <input type="hidden" name="action" value="inactiveRow">
-            <button class="btn btn-primary" type="submit">Remove from Watchlist</button>
+            <input type="number" min="0.01" step="0.01" name="price" placeholder="Price">
+            <button class="btn btn-primary" type="submit">Place bid</button>
         </form>
-    {% else %}
-        <form action="{% url 'watch' %}" method="post">
+        <p></p>
+        {% if request.user == seller %}
+        <form action="{% url 'close' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="watched_id" value="{{ auction.id }}">
-            <input type="hidden" name="watcher_id" value="{{ user.id }}">
-            <input type="hidden" name="action" value="insertRow">
-            <button class="btn btn-primary" type="submit">Add to Watchlist</button>
-        </form> 
+            <input type="hidden" name="action" value="closeListing">
+            <input type="hidden" name="auction_id" value="{{ auction.id }}">
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <button class="btn btn-primary" type="submit">Close</button>
+        </form>
+        {% endif %} 
+        <p></p>
+        <h2>Watchlist</h2>
+        <p></p>
+        {% if watch == True and user.is_authenticated %}
+            <form action="{% url 'watch' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="watched_id" value="{{ auction.id }}">
+                <input type="hidden" name="watcher_id" value="{{ user.id }}">
+                <input type="hidden" name="action" value="inactiveRow">
+                <button class="btn btn-primary" type="submit">Remove from Watchlist</button>
+            </form>
+        {% else %}
+            <form action="{% url 'watch' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="watched_id" value="{{ auction.id }}">
+                <input type="hidden" name="watcher_id" value="{{ user.id }}">
+                <input type="hidden" name="action" value="insertRow">
+                <button class="btn btn-primary" type="submit">Add to Watchlist</button>
+            </form> 
+        {% endif %}
+        <p></p>
+        <h2>Commentary section</h2>
+        {% if user.is_authenticated %}
+            <form action="{% url 'comment' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input autofocus class="form-control" type="text" name="commentary" placeholder="Type your commentary here">
+                </div>
+                <input type="hidden" name="subject_id" value="{{ auction.id }}">
+                <input type="hidden" name="commentator_id" value="{{ user.id }}">
+                <button class="btn btn-primary" type="submit">Comment</button>
+            </form>
+        {% else %}
+        <p>Log in to post commentaryes </p>
+        {% endif %}
+        <ul>
+            {% for commentary in commentary %}
+                <li>
+                    <p>{{ user.username }} said: {{ commentary.comment }}</p>
+                </li>
+            {% empty %}
+                <li>Be the first to comment something about this auction</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>This listing is closed</p>
     {% endif %}
-    <p></p>
-    <h2>Commentary section</h2>
-    <form action="{% url 'comment' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input autofocus class="form-control" type="text" name="commentary" placeholder="Type your commentary here">
-        </div>
-        <input type="hidden" name="subject_id" value="{{ auction.id }}">
-        <input type="hidden" name="commentator_id" value="{{ user.id }}">
-        <button class="btn btn-primary" type="submit">Comment</button>
-    </form>
-    <ul>
-        {% for commentary in commentary %}
-            <li>
-                <p>{{ user.username }} said: {{ commentary.comment }}</p>
-            </li>
-        {% empty %}
-            <li>Be the first to comment something about this auction</li>
-        {% endfor %}
-    </ul>
+    {% if user.is_authenticated and auction.active == False %}
+        <p>{{ bidder.username }} won this auction by the price of USD {{ bidder.offer }}</p>
+    {% endif %}
 {% endblock %}

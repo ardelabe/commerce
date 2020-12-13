@@ -7,6 +7,11 @@
             <li>
                 <img src="{{ auction.image }}" alt="https://www.teknozeka.com/wp-content/uploads/2020/03/wp-header-logo-33.png" width="150"> 
                 <a href="{% url 'listings' auction.id %}">{{ auction.title }}</a>
+                {% if auction.active == False %}
+                Listing Closed
+                {% else %}
+                Listing Active
+                {% endif %}
                 | Description: {{ auction.description }}
                 | USD {{ auction.price }}
                 <p></p>
