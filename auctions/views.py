@@ -85,7 +85,7 @@ def listings(request, auction_id):
         if request.user.is_authenticated:
             data = request.POST
             # print(request.user.is_authenticated)
-            # print(data)
+            print(data)
             # print(data["watcher_id"])
             offer = data["price"]
             bidder = User.objects.get(pk=data["watcher_id"])
@@ -99,7 +99,10 @@ def listings(request, auction_id):
             # print(type(float(bidOnProd["offer__max"])))
             # if offer <= bidOnProd["offer__max"] or offer < float(auction.price):
                 # message = "Your offer must be greater or equal the starting price and greather than any existing current offer"
-            if (bidOnProd["offer__max"] == None) and (float(offer) < float(auction.price)):
+            
+            if not offer:
+                message = "Please enter a value"
+            elif (bidOnProd["offer__max"] == None) and (float(offer) < float(auction.price)):
                 message = "Your offer must be greater or equal the starting price"
                 print("bop is None")
             elif (bidOnProd["offer__max"] != None) and (float(offer) <= float(bidOnProd["offer__max"])):
@@ -155,7 +158,7 @@ def sell(request):
     if request.user.is_authenticated:
         if request.method == "POST":
             data = request.POST
-            # print(data)
+            print(data)
             title = data["title"]
             # print(title)
             description = data["description"]
@@ -165,29 +168,28 @@ def sell(request):
             # print(image)
             user = request.user
             # print(seller)
-            a = Auction(title=title, description=description, price=price, image=image, seller=user)
-            # print(a)
-            a.save()
-            acat = Auction.objects.get(title=title, description=description, price=price, image=image, seller=user)
-            # print(acat)
-            for i in Category.CATEGORY:
-                # print(i)
-                if i[1] == data["category"]:
-                    # print(data["category"])
-                    # print(i)
-                    category = i[0]
-            print(category)
-            c = Category(categorized=acat, category=category)
-            print(c)
-            c.save()
+            if not title or description or price or data["category"]:
+                category = Grouping.objects.all()
+                return render(request, "auctions/sell.html", {
+                    "category": category,
+                    "message": "Please fill the post fields with the required data."
+
+                })
+            else:
+                a = Auction(title=title, description=description, price=price, image=image, seller=user)
+                a.save()
+                categorized = Auction.objects.get(title=title, description=description, price=price, image=image, seller=user)
+                category = Grouping.objects.get(grouping=data["category"])
+                c = Category(categorized=categorized, category=category)
+                print(categorized)
+                c.save()
+            
         # for i in Category.CATEGORY:
         #     print(Category.CATEGORY[i][1])
         # print(Category.CATEGORY)
         # print(Category.CATEGORY[0])
         # print(Category.CATEGORY[0][1])
-        category = []
-        for i in Category.CATEGORY:
-            category.append(i[1])
+        category = Grouping.objects.all()
         # print(category)
         return render(request, "auctions/sell.html", {
         "category": category
@@ -300,6 +302,7 @@ def category(request):
     })
 
 def grouping(request, distinct_id):
+    message = None
     c = Category.objects.filter(category_id=distinct_id)
     # print(c[1].categorized_id)
     l = []
@@ -315,5 +318,4 @@ def grouping(request, distinct_id):
     return render(request, "auctions/category.html", {
         "l": l, # pass the list of auctions in the group
         "message": message
-
     })

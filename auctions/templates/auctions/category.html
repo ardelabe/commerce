@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% for distinct in g %}
+        <p>
+            <a href="{% url 'grouping' distinct.id %}">{{ distinct.grouping }}</a>
+        </p>
+    {% endfor %}
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% else %}
+        {% for i in l %}
+            <p>
+                <a href="{% url 'listings' i.id %}">{{ i.title }}</a>
+            </p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

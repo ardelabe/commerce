@@ -15,7 +15,7 @@
         <p></p> 
         <p>Bid on this item!</p>
         {% if message %}
-        <div>{{ message }}</div>
+            <div>{{ message }}</div>
         {% endif %}
         <form action="{% url 'listings' auction.id %}" method="post">
             {% csrf_token %}
@@ -36,7 +36,7 @@
         </form>
         {% endif %} 
         <p></p>
-        <h2>Watchlist</h2>
+            <h2>Watchlist</h2>
         <p></p>
         {% if watch == True and user.is_authenticated %}
             <form action="{% url 'watch' %}" method="post">
@@ -68,7 +68,7 @@
                 <button class="btn btn-primary" type="submit">Comment</button>
             </form>
         {% else %}
-        <p>Log in to post commentaryes </p>
+            <p>Log in to post commentaries </p>
         {% endif %}
         <ul>
             {% for commentary in commentary %}
@@ -83,6 +83,10 @@
         <p>This listing is closed</p>
     {% endif %}
     {% if user.is_authenticated and auction.active == False %}
-        <p>{{ bidder.username }} won this auction by the price of USD {{ bidder.offer }}</p>
+        {% if bidder.username == None %}
+            <p>The owner closed this auction without bids</p>
+        {% else %}
+            <p>{{ bidder.username }} won this auction by the price of USD {{ bidder.offer }}</p>
+        {% endif %}
     {% endif %}
 {% endblock %}

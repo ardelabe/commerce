@@ -76,3 +76,7 @@ Redirects to /listings/<auction_id>
 That's nice. Very nice
 ***REMINDER*** I think it would be nice see closed listings in some page. 
 ***REMINDER*** Model.objects.distinct() only works with PostgreSQL. 
+
+Sometimes, the best string representation of a funcion is the simpliest as possible.
+
+if not foo: is a good way to test if foo is empty. 

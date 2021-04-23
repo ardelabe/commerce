@@ -1,6 +1,9 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
     <h2>Create Listing</h2>
     <form action="{% url 'sell' %}" method="POST">
         {% csrf_token %}
@@ -8,7 +11,7 @@
         <p></p>
         <input type="text" name="description" placeholder="Description">
         <p></p>
-        <label for="category">Choose a category:</label>
+        <label for="category">Category:</label>
         <select id="category" name="category">
             {% for i in category %}
                 <option value="{{ i }}">{{ i }}</option>

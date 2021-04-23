@@ -54,7 +54,7 @@ class Grouping(models.Model):
     grouping = models.CharField(max_length=64)
     
     def __str__(self):
-        return f"Grouping: {self.grouping}"
+        return f"{self.grouping}"
 
 class Category(models.Model):
     categorized = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="categorized")
