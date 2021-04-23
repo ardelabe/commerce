@@ -160,16 +160,19 @@ def sell(request):
             data = request.POST
             print(data)
             title = data["title"]
-            # print(title)
+            print(title)
             description = data["description"]
+            print(description)
             price = data["price"]
-            # print(price)
+            print(price)
             image = data["image"]
             # print(image)
             user = request.user
-            # print(seller)
-            if not title or description or price or data["category"]:
+            print(user)
+            print(data["category"])
+            if not (title or description or price or data["category"]):
                 category = Grouping.objects.all()
+                print("Please fill the post fields with the required data.")
                 return render(request, "auctions/sell.html", {
                     "category": category,
                     "message": "Please fill the post fields with the required data."

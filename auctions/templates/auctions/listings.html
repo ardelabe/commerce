@@ -73,7 +73,7 @@
         <ul>
             {% for commentary in commentary %}
                 <li>
-                    <p>{{ user.username }} said: {{ commentary.comment }}</p>
+                    <p>{{ commentary.comentator_id }} said: {{ commentary.comment }}</p>
                 </li>
             {% empty %}
                 <li>Be the first to comment something about this auction</li>
